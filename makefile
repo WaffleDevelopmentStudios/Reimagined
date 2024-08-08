@@ -9,7 +9,7 @@ LDFLAGS = -lglfw -lGL -lX11 -lpthread -lXrandr -lXi -ldl
 LDWIN32FLAGS = -Llib/ -lglfw3 -lopengl32 -Wl,--subsystem,windows -lgdi32 -static-libstdc++ -static-libgcc
 
 
-OBJ_NAME = Minecraft
+OBJ_NAME = Reimagined
 OBJ_PATH = bin/$(OBJ_NAME)
 
 .PHONY: test clean build buildtest
