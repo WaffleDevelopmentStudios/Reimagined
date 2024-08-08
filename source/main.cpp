@@ -190,7 +190,7 @@ int main()
 	#ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	#endif
-	GLFWwindow* window = glfwCreateWindow(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT, "Minecraft: Reimagined - i1.0", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT, "Minecraft: Reimagined - 1.0.0-indev", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "[Client - Main]  Failed to create GLFW window" << std::endl;
