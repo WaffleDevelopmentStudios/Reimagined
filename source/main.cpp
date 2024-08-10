@@ -97,12 +97,17 @@ u16 heldBlockType = 1;
 u64 verticesLength = 240 * (16 * 16 * 16);
 u64 indicesLength = 36 * (16 * 16 * 16);
 
+float vertices[240 * (16 * 16 * 16)];
+unsigned int indices[36 * (16 * 16 * 16)];
+
 // Structs and Classes
 typedef struct {
 	unsigned int VBO;
 	unsigned int VAO;
 	unsigned int EBO;
 } Buffers;
+
+Buffers buffers;
 
 typedef struct{
 
@@ -179,9 +184,8 @@ void RegenerateChunk(int chunkX, int chunkY, int chunkZ);
 
 int main()
 {
-
 	if (!glfwInit()) {
-		std::cout << "Failed to initialize GLFW" << std::endl;
+		std::cout << "[Client - Main]  Failed to initialize GLFW" << std::endl;
 		return -1;
 	}
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -253,6 +257,7 @@ int main()
 
 	u32 seed = time(NULL);
 	srand(seed);
+	std::cout << "[Client - Main]  Generating Chunks..." << std::endl;
 	for (u32 chunkZ = 0; chunkZ < 8; chunkZ++) {
 		for (u32 chunkY = 0; chunkY < 8; chunkY++) {
 			for (u32 chunkX = 0; chunkX < 8; chunkX++) {
@@ -260,6 +265,7 @@ int main()
 			}
 		}
 	}
+	std::cout << "[Client - Main]  Chunks Generated Successfully." << std::endl;
 
 	double currentFrame = static_cast<double>(glfwGetTime());
 	double framesPerSecond = 60;
@@ -314,7 +320,6 @@ int main()
 			0.75f,  -0.55f,  0.0f,  0.0f, 0.0f, (float)heldBlockType, 0,  // 2   bottom left   (front face)   [Cube 0, 0, 0]
 			0.75f,  -1.00f,  0.0f,  0.0f, 1.0f, (float)heldBlockType, 0   // 3   top left      (front face)   [Cube 0, 0, 0]
 		};
-		Buffers buffers;
 		buffers = generateBuffersHand(vertices, 42 * sizeof(float));
 		glBindVertexArray(buffers.VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 42);
@@ -325,7 +330,7 @@ int main()
 		glfwSwapBuffers(window);
 		glfwPollEvents();    
 	}
- 
+
 	glfwTerminate();
 	return 0;
 }
@@ -366,29 +371,29 @@ RaycastData getBlockRaycast(glm::vec3 camPos, glm::vec3 camFront) {
 
 void breakBlock() {
 	RaycastData raycast = getBlockRaycast(cameraPos, cameraFront);
-		if (raycast.hit == false) {
-			mouseClick = false;
-			return;
-		}
-		u32 chunkX = (u32)(raycast.rayPos.x / 16);
-		u32 chunkY = (u32)(raycast.rayPos.y / 16);
-		u32 chunkZ = (u32)(raycast.rayPos.z / 16);
-		chunks[(chunkZ * 64) + (chunkY * 8) + chunkX].blockTypes[raycast.rayPos.x % 16][raycast.rayPos.y % 16][raycast.rayPos.z % 16] = 0;
-		chunks[(chunkZ * 64) + (chunkY * 8) + chunkX].blockStates[raycast.rayPos.x % 16][raycast.rayPos.y % 16][raycast.rayPos.z % 16] = 0;
-		RegenerateChunk(chunkX, chunkY, chunkZ);
+	if (raycast.hit == false) {
+		mouseClick = false;
+		return;
+	}
+	u32 chunkX = (u32)(raycast.rayPos.x / 16);
+	u32 chunkY = (u32)(raycast.rayPos.y / 16);
+	u32 chunkZ = (u32)(raycast.rayPos.z / 16);
+	chunks[(chunkZ * 64) + (chunkY * 8) + chunkX].blockTypes[raycast.rayPos.x % 16][raycast.rayPos.y % 16][raycast.rayPos.z % 16] = 0;
+	chunks[(chunkZ * 64) + (chunkY * 8) + chunkX].blockStates[raycast.rayPos.x % 16][raycast.rayPos.y % 16][raycast.rayPos.z % 16] = 0;
+	RegenerateChunk(chunkX, chunkY, chunkZ);
 }
 void placeBlock() {
 	RaycastData raycast = getBlockRaycast(cameraPos, cameraFront);
-		if (raycast.hit == false) {
-			mouseClick = false;
-			return;
-		}
-		u32 chunkX = (u32)(raycast.prevRayPos.x / 16);
-		u32 chunkY = (u32)(raycast.prevRayPos.y / 16);
-		u32 chunkZ = (u32)(raycast.prevRayPos.z / 16);
-		chunks[(chunkZ * 64) + (chunkY * 8) + chunkX].blockTypes[raycast.prevRayPos.x % 16][raycast.prevRayPos.y % 16][raycast.prevRayPos.z % 16] = heldBlockType;
-		chunks[(chunkZ * 64) + (chunkY * 8) + chunkX].blockStates[raycast.prevRayPos.x % 16][raycast.prevRayPos.y % 16][raycast.prevRayPos.z % 16] = heldBlockType;
-		RegenerateChunk(chunkX, chunkY, chunkZ);
+	if (raycast.hit == false) {
+		mouseClick = false;
+		return;
+	}
+	u32 chunkX = (u32)(raycast.prevRayPos.x / 16);
+	u32 chunkY = (u32)(raycast.prevRayPos.y / 16);
+	u32 chunkZ = (u32)(raycast.prevRayPos.z / 16);
+	chunks[(chunkZ * 64) + (chunkY * 8) + chunkX].blockTypes[raycast.prevRayPos.x % 16][raycast.prevRayPos.y % 16][raycast.prevRayPos.z % 16] = heldBlockType;
+	chunks[(chunkZ * 64) + (chunkY * 8) + chunkX].blockStates[raycast.prevRayPos.x % 16][raycast.prevRayPos.y % 16][raycast.prevRayPos.z % 16] = heldBlockType;
+	RegenerateChunk(chunkX, chunkY, chunkZ);
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -721,25 +726,19 @@ void GenerateChunk(int chunkX, int chunkY, int chunkZ) {
 			}
 		}
 	}
-	float vertices[verticesLength];
-	unsigned int indices[indicesLength];
 	chunks[(chunkZ * 64) + (chunkY * 8) + chunkX].pos[0] = chunkX;
 	chunks[(chunkZ * 64) + (chunkY * 8) + chunkX].pos[1] = chunkY;
 	chunks[(chunkZ * 64) + (chunkY * 8) + chunkX].pos[2] = chunkZ;
 	GenerateIndicesVerticesChunk(vertices, indices, chunks[(chunkZ * 64) + (chunkY * 8) + chunkX]);
-	Buffers buffers;
 	buffers = generateBuffersChunk(vertices, verticesLength * sizeof(float), indices, indicesLength * sizeof(unsigned int));
 	chunks[(chunkZ * 64) + (chunkY * 8) + chunkX].storedBuffers = buffers;
 }
 
 void RegenerateChunk(int chunkX, int chunkY, int chunkZ) {
-	float vertices[verticesLength];
-	unsigned int indices[indicesLength];
 	chunks[(chunkZ * 64) + (chunkY * 8) + chunkX].pos[0] = chunkX;
 	chunks[(chunkZ * 64) + (chunkY * 8) + chunkX].pos[1] = chunkY;
 	chunks[(chunkZ * 64) + (chunkY * 8) + chunkX].pos[2] = chunkZ;
 	GenerateIndicesVerticesChunk(vertices, indices, chunks[(chunkZ * 64) + (chunkY * 8) + chunkX]);
-	Buffers buffers;
 	buffers = generateBuffersChunk(vertices, verticesLength * sizeof(float), indices, indicesLength * sizeof(unsigned int));
 	chunks[(chunkZ * 64) + (chunkY * 8) + chunkX].storedBuffers = buffers;
 }
