@@ -4,6 +4,11 @@ itch.io:  https://waffledevstudios.itch.io/reimagined
 
 ## Version History
 
+1.1.0-indev
+ - Terrain Generation Updated.
+ - Worlds save and load.
+ - Chunk ID system overhauled.
+
 1.0.1-indev
  - Ported to Windows.
  - Overhauled the codebase.
