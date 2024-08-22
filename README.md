@@ -4,6 +4,11 @@ itch.io:  https://waffledevstudios.itch.io/reimagined
 
 ## Version History
 
+1.2.0-indev
+ - Items and a Hotbar
+ - Inventory Save/Loading
+ - Added Snow, Jack O' Lanterns, Pumpkins, and Carved Pumpkins.
+
 1.1.0-indev
  - Terrain Generation Updated.
  - Worlds save and load.
