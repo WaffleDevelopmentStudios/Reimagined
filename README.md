@@ -1,6 +1,7 @@
 # Reimagined
 
 itch.io:  https://waffledevstudios.itch.io/reimagined
+discord:  https://discord.gg/XyYpUM65d5
 
 ## Version History
 
